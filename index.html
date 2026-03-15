@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typer</title>
+    <link rel="icon" href="logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-500 flex justify-center pt-10">
+    <div class="w-[75%] bg-black flex flex-col pt-5 px-8">
+        <div class="flex justify-between mb-8">
+            <div class="flex justify-start">
+                <div><img src="logo.png" class="h-10"></div>
+                <div>
+                    <h2 class="text-white text-lg">Typing Speed Test</h2>
+                    <p class="text-white text-xs">Type as fast as you can in time</p>
+                </div>
+            </div>
+            <div class="flex">
+                <div id="prize"></div>
+                <div id="speed"></div>
+
+            </div>
+        </div>
+        <div class="flex justify-between mb-3">
+            <div class="flex gap-4">
+                <div>
+                    <h3 class="text-neutral-200">WPM: <span id="wpm">0</span></h3>
+                </div>
+                <div>
+                    <h3 class="text-neutral-200">Accuracy: <span id="Accuracy">0</span></h3>
+                </div>
+                <div>
+                    <h3 class="text-neutral-200">Time: <span id="timer">15</span></h3>
+                </div>
+            </div> 
+            <div class="flex justify-between gap-1">
+                <div>
+                    <p class="text-white">Difficulty:</p>
+                </div>
+                <div><button class="text-neutral-200 border px-2 border-neutral-200 rounded-md">Easy</button></div>
+                <div><button class="text-neutral-200 border px-2 border-neutral-200 rounded-md">Medium</button></div>
+                <div><button class="text-neutral-200 border px-2 border-neutral-200 rounded-md">Hard</button></div>
+                <div>
+                    <select name="Time" id="duration" class="bg-gray-400">
+                        <option value="15">15s</option>
+                        <option value="30">30s</option>
+                        <option value="60">60s</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <hr class="">
+        <div class="my-7">
+            <p class="text-white text-md" id="text">
+                The quick brown fox jumps over the lazy dog, a classic phrase that includes every
+                letter of the alphabet to warm up your fingers. Typing with consistency is far more
+                important than raw speed when you first begin, as accuracy naturally leads to faster results over
+                time. Keep your back straight, your wrists level with the keyboard, and try to look at the screen rather
+                than your hands. As you become more comfortable with the home row keys, you will notice your muscle
+                memory taking over, allowing your thoughts to flow directly onto the page without hesitation.
+                Regular practice for just fifteen minutes a day can significantly improve your words-per-minute
+                score and overall digital efficiency.
+            </p>
+            <p class="text-white text-md hidden">
+                Stimulate your mind as you test your typing speed with this standard English
+                paragraph typing test. Watch your typing speed and accuracy increase as you learn about
+                a variety of new topics! Over 40 typing test selections available.If you don't like a
+                test prompt, you can get a different (random) prompt with the "change test" button -
+                or select a specific paragraph to type from the list below. To find out how
+                fast you type, just start typing in the blank textbox on the right of the test prompt.
+                You will see your progress, including errors on the left side as you type. In order
+                to complete the test and save your score, you need to get 100% accuracy. You can fix
+                errors as you go, or correct them at the end with the help of the spell checker.
+            </p>
+        </div>
+        <div>
+            <input type="text" class="w-full bg-gray-300 rounded-md px-2 py-3" id="input">
+        </div>
+        <div class="flex justify-center mt-3 mb-20">
+            <div>
+                <form>
+                    <button class="border px-2 border-neutral-200 text-neutral-200 rounded-md">Restart ⟳</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="app.js"></script>
+
+</html>
