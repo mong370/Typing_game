@@ -4,80 +4,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typer</title>
+    <title>Typer - Speed Typing Test</title>
     <link rel="icon" href="logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
+        .word {
+            display: inline-block;
+            position: relative;
+            margin: 2px 4px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            border-bottom: 2px solid transparent;
+            transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+            vertical-align: middle;
+        }
+        .word.active {
+            background-color: rgba(59, 130, 246, 0.2);
+            border-bottom: 2px solid #3b82f6;
+            color: #ffffff;
+            font-weight: 500;
+        }
+        .word.correct {
+            color: #34d399;
+        }
+        .word.incorrect {
+            color: #f87171;
+            text-decoration: line-through;
+        }
+        .input-error {
+            background-color: rgba(239, 68, 68, 0.12) !important;
+            border-color: #ef4444 !important;
+            color: #fca5a5 !important;
+        }
+        #text-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        #text-container::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 9999px;
+        }
+        #text-container::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        #text-container::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
 </head>
 
-<body class="bg-slate-500 flex justify-center pt-10">
-    <div class="w-[75%] bg-black flex flex-col pt-5 px-8">
-        <div class="flex justify-between mb-8">
-            <div class="flex justify-start">
-                <div><img src="logo.png" class="h-10"></div>
-                <div>
-                    <h2 class="text-white text-lg">Typing Speed Test</h2>
-                    <p class="text-white text-xs">Type as fast as you can in time</p>
-                </div>
-            </div>
-            <div class="flex">
-                <div id="prize"></div>
-                <div id="speed"></div>
+<body class="bg-slate-950 min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 text-slate-100 antialiased selection:bg-blue-500 selection:text-white">
+    
+    <!-- Outer Card Container -->
+    <div class="w-full max-w-4xl bg-slate-900/90 border border-slate-800/90 backdrop-blur-xl rounded-3xl shadow-2xl shadow-black/60 flex flex-col p-6 sm:p-10 relative overflow-hidden">
+        
+        <!-- Ambient Decorative Glows -->
+        <div class="absolute -top-32 -right-32 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-emerald-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
+        <!-- 1. Header Bar -->
+        <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-800/80 relative z-10">
+            <!-- Brand / Title -->
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-slate-800 to-slate-700/80 border border-slate-700/60 p-2 flex items-center justify-center shadow-lg shadow-black/20">
+                    <img src="logo.png" alt="Typer Logo" class="w-full h-full object-contain">
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-xl font-extrabold tracking-tight text-white">Typer</h1>
+                        <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">Speed Test</span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-normal">Test, track, and master your keystrokes</p>
+                </div>
             </div>
-        </div>
-        <div class="flex justify-between mb-3">
-            <div class="flex gap-4">
-                <div>
-                    <h3 class="text-neutral-200">WPM: <span id="wpm">0</span></h3>
+
+            <!-- Header Badges (Prize Tier & Live Speed) -->
+            <div class="flex items-center gap-2.5 self-stretch sm:self-auto justify-end">
+                <div id="prize" class="px-3.5 py-1.5 bg-slate-800/70 border border-slate-700/60 rounded-xl text-xs font-semibold text-amber-400 flex items-center shadow-sm">
+                    <span>Ready</span>
                 </div>
-                <div>
-                    <h3 class="text-neutral-200">Accuracy: <span id="Accuracy">0</span></h3>
+                <div id="speed" class="px-3.5 py-1.5 bg-slate-800/70 border border-slate-700/60 rounded-xl text-xs mono-font font-semibold text-emerald-400 flex items-center shadow-sm">
+                    <span>0 WPM</span>
                 </div>
-                <div>
-                    <h3 class="text-neutral-200">Time: <span id="timer">15</span></h3>
+            </div>
+        </header>
+
+        <!-- 2. Controls & Configuration Toolbar -->
+        <section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-3.5 mb-6 bg-slate-950/60 border border-slate-800/80 rounded-2xl relative z-10">
+            <!-- Difficulty Selector -->
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider pl-1.5">Difficulty</span>
+                <div class="flex items-center p-1 bg-slate-900 border border-slate-800 rounded-xl gap-1">
+                    <button type="button" class="difficulty-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all" data-difficulty="easy">Easy</button>
+                    <button type="button" class="difficulty-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all" data-difficulty="medium">Medium</button>
+                    <button type="button" class="difficulty-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all" data-difficulty="hard">Hard</button>
                 </div>
-            </div> 
-            <div class="flex justify-between gap-1">
-                <div>
-                    <p class="text-white">Difficulty:</p>
-                </div>
-                <div><button class="text-neutral-200 border px-2 border-neutral-200 rounded-md">Easy</button></div>
-                <div><button class="text-neutral-200 border px-2 border-neutral-200 rounded-md">Medium</button></div>
-                <div><button class="text-neutral-200 border px-2 border-neutral-200 rounded-md">Hard</button></div>
-                <div>
-                    <select name="Time" id="duration" class="bg-gray-400">
-                        <option value="15">15s</option>
-                        <option value="30">30s</option>
-                        <option value="60">60s</option>
+            </div>
+
+            <!-- Duration Selector -->
+            <div class="flex items-center gap-2 justify-between sm:justify-end">
+                <label for="duration" class="text-xs font-semibold text-slate-400 uppercase tracking-wider pl-1.5">Timer</label>
+                <div class="flex items-center bg-slate-900 border border-slate-800 rounded-xl px-2 py-1">
+                    <select id="duration" class="bg-transparent text-xs text-slate-200 font-semibold focus:outline-none cursor-pointer py-0.5 pr-1">
+                        <option value="15" class="bg-slate-900 text-slate-200">15s</option>
+                        <option value="30" class="bg-slate-900 text-slate-200">30s</option>
+                        <option value="60" class="bg-slate-900 text-slate-200">60s</option>
                     </select>
                 </div>
             </div>
-        </div>
-        <hr class="">
-        <div class="my-7">
-            <p class="text-white text-md" id="text">
-                The quick brown fox jumps over the lazy dog, a classic phrase that includes every
-                letter of the alphabet to warm up your fingers. Typing with consistency is far more
-                important than raw speed when you first begin, as accuracy naturally leads to faster results over
-                time. Keep your back straight, your wrists level with the keyboard, and try to look at the screen rather
-                than your hands. As you become more comfortable with the home row keys, you will notice your muscle
-                memory taking over, allowing your thoughts to flow directly onto the page without hesitation.
-                Regular practice for just fifteen minutes a day can significantly improve your words-per-minute
-                score and overall digital efficiency.
-            </p>
-        </div>
-        <div>
-            <input type="text" class="w-full bg-gray-300 rounded-md px-2 py-3" id="input">
-        </div>
-        <div class="flex justify-center mt-3 mb-20">
-            <div>
-                <form>
-                    <button class="border px-2 border-neutral-200 text-neutral-200 rounded-md">Restart ⟳</button>
-                </form>
+        </section>
+
+        <!-- 3. Real-Time Stats Row -->
+        <section class="grid grid-cols-3 gap-3 sm:gap-4 mb-6 relative z-10">
+            <!-- WPM Card -->
+            <div class="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center text-center transition-all hover:border-slate-700/60 shadow-sm">
+                <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Words / Min</span>
+                <span id="wpm" class="text-3xl sm:text-4xl font-extrabold text-blue-400 mono-font">0</span>
+            </div>
+
+            <!-- Accuracy Card -->
+            <div class="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center text-center transition-all hover:border-slate-700/60 shadow-sm">
+                <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Accuracy</span>
+                <span id="Accuracy" class="text-3xl sm:text-4xl font-extrabold text-emerald-400 mono-font">100%</span>
+            </div>
+
+            <!-- Time Card -->
+            <div class="bg-slate-950/70 border border-slate-800/80 rounded-2xl p-4 flex flex-col items-center justify-center text-center transition-all hover:border-slate-700/60 shadow-sm">
+                <span class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Time Left</span>
+                <div class="flex items-baseline gap-1">
+                    <span id="timer" class="text-3xl sm:text-4xl font-extrabold text-amber-400 mono-font">15</span>
+                    <span class="text-xs text-slate-500 font-mono">s</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Text Passage Container -->
+        <section class="relative mb-5 z-10">
+            <div id="text-container" class="relative p-6 sm:p-7 bg-slate-950/80 border border-slate-800/80 rounded-2xl h-48 overflow-y-auto select-none shadow-inner cursor-pointer" title="Click to focus input">
+                <p id="text" class="mono-font text-lg sm:text-xl leading-[2.3rem] text-slate-400 tracking-wide break-words">
+                    <!-- Words injected dynamically via app.js -->
+                </p>
+            </div>
+        </section>
+
+        <!-- 5. User Typing Input -->
+        <section class="relative mb-6 z-10">
+            <div class="relative flex items-center">
+                <input 
+                    type="text" 
+                    id="input" 
+                    autocomplete="off" 
+                    autocorrect="off" 
+                    autocapitalize="off" 
+                    spellcheck="false"
+                    placeholder="Click here and type to start the test..." 
+                    class="w-full bg-slate-950/90 border-2 border-slate-700/80 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 rounded-2xl px-5 sm:px-6 py-4 text-lg sm:text-xl mono-font text-white placeholder-slate-500 focus:outline-none transition-all shadow-lg"
+                >
+                <!-- CapsLock warning popup -->
+                <div id="capslock-warning" class="hidden absolute right-4 text-xs font-medium text-amber-400 bg-amber-400/10 border border-amber-400/30 px-3 py-1.5 rounded-lg shadow-sm">
+                    Caps Lock ON
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Footer Controls & Shortcuts -->
+        <footer class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 text-xs text-slate-400 relative z-10">
+            <!-- Keyboard shortcut cues -->
+            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <span class="inline-flex items-center px-2 py-1 bg-slate-800/90 border border-slate-700/70 rounded-md text-[11px] mono-font text-slate-300">Space</span>
+                <span>to submit word</span>
+                <span class="text-slate-600 hidden sm:inline">•</span>
+                <span class="inline-flex items-center px-2 py-1 bg-slate-800/90 border border-slate-700/70 rounded-md text-[11px] mono-font text-slate-300">Esc</span>
+                <span>to restart</span>
+            </div>
+            
+            <!-- Restart Button -->
+            <button id="restart-btn" type="button" class="flex items-center gap-2 px-5 py-2.5 bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white rounded-xl border border-slate-700/70 font-semibold transition-all hover:border-slate-600 active:scale-95 shadow-sm group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:rotate-180 duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Restart Test
+            </button>
+        </footer>
+
+        <!-- 7. Game Over / Results Modal Overlay -->
+        <div id="results-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div class="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-md w-full p-6 sm:p-8 text-center shadow-2xl shadow-blue-500/10 relative transform transition-all">
+                <div id="modal-badge-icon" class="hidden text-5xl mb-3"></div>
+                <h2 class="text-2xl font-extrabold text-white mb-1 tracking-tight" id="modal-title">Test Completed!</h2>
+                <p class="text-slate-400 text-xs sm:text-sm mb-6" id="modal-subtitle">Here is your speed performance summary:</p>
+
+                <div class="grid grid-cols-2 gap-3 mb-6 mono-font">
+                    <!-- Net Speed -->
+                    <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+                        <div class="text-[11px] text-slate-400 uppercase font-semibold">Net Speed</div>
+                        <div class="text-3xl font-extrabold text-blue-400 mt-1" id="modal-wpm">0 <span class="text-xs text-slate-500 font-normal">WPM</span></div>
+                    </div>
+                    <!-- Accuracy -->
+                    <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+                        <div class="text-[11px] text-slate-400 uppercase font-semibold">Accuracy</div>
+                        <div class="text-3xl font-extrabold text-emerald-400 mt-1" id="modal-accuracy">100%</div>
+                    </div>
+                    <!-- Characters -->
+                    <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+                        <div class="text-[11px] text-slate-400 uppercase font-semibold">Characters</div>
+                        <div class="text-lg font-bold text-slate-200 mt-1">
+                            <span class="text-emerald-400" id="modal-correct-chars">0</span> <span class="text-slate-500">/</span> <span class="text-rose-400" id="modal-wrong-chars">0</span>
+                        </div>
+                    </div>
+                    <!-- Words -->
+                    <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+                        <div class="text-[11px] text-slate-400 uppercase font-semibold">Words</div>
+                        <div class="text-lg font-bold text-slate-200 mt-1">
+                            <span class="text-emerald-400" id="modal-correct-words">0</span> <span class="text-slate-500">/</span> <span class="text-rose-400" id="modal-wrong-words">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rank Banner -->
+                <div class="mb-6 p-3.5 bg-blue-950/40 border border-blue-800/40 rounded-2xl flex items-center justify-center gap-2 text-sm text-blue-200 font-medium">
+                    <span class="text-blue-400">Rank:</span>
+                    <span id="modal-rank" class="font-bold text-white">Pro</span>
+                </div>
+
+                <!-- Action Button -->
+                <button id="modal-restart-btn" type="button" class="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-2xl transition-all shadow-lg shadow-blue-600/30 active:scale-98">
+                    Play Again (Enter)
+                </button>
             </div>
         </div>
+
     </div>
+
+    <script src="app.js"></script>
 </body>
-<script src="app.js"></script>
 
 </html>
